@@ -1,4 +1,3 @@
-// services/emailService.js
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { LeadModel } from "../models/leadModel.js";
@@ -24,7 +23,11 @@ transporter.verify((error, success) => {
 });
 
 export class EmailService {
-  static async sendLeadNotificationEmail(name, email) {
+  constructor(db) {
+    this.db = db; // Store Firestore instance (optional for future use)
+  }
+
+  async sendLeadNotificationEmail(name, email) {
     console.log(`Starting sendLeadNotificationEmail for ${name} (${email})...`);
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -46,12 +49,13 @@ export class EmailService {
         `Failed to send lead notification email for ${name} (${email}): ${error.message}`
       );
       console.error("Error details:", error);
-      // Fallback to file storage
-      await LeadModel.saveLeadToFile(name, email);
+      // Fallback to file storage (if you implement this)
+      // await LeadModel.saveLeadToFile(name, email);
+      throw error; // Propagate error to ChatController
     }
   }
 
-  static async sendTestEmail() {
+  async sendTestEmail() {
     console.log("Sending test email...");
     const mailOptions = {
       from: process.env.EMAIL_USER,

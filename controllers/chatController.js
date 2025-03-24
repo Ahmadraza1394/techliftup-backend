@@ -9,7 +9,8 @@ export class ChatController {
 
   static async testEmail(req, res) {
     try {
-      const result = await EmailService.sendTestEmail();
+      const emailService = new EmailService(); // No db needed for testEmail
+      const result = await emailService.sendTestEmail();
       res.status(200).send(result);
     } catch (error) {
       res.status(500).send(error.message);
@@ -74,10 +75,8 @@ export class ChatController {
         console.log(
           "New user condition met, calling sendLeadNotificationEmail..."
         );
-        const emailService = new EmailService(db);
+        const emailService = new EmailService(db); // Pass db to EmailService
         await emailService.sendLeadNotificationEmail(name, email);
-
-        // Save the lead to Firestore - THIS IS THE MISSING LINE
         await leadModel.saveLead(name, email);
         console.log(`New lead saved for ${name} (${email})`);
       } else {
