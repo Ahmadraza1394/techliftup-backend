@@ -1,0 +1,10 @@
+# .gitignore
+config/*.json
+node_modules
+.env
+*.log
+dist/
+build/
+*.tmp
+.DS_Store
+*.local
